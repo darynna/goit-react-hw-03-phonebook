@@ -4,7 +4,7 @@ import { ContactList } from "./ContactList/ContactList";
 import { Filter } from "./SearchFilter/SearchFilter";
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import {MainWrap,  Title} from './App.styled'
-
+const LS_KEY = 'contacts'
 export class App extends Component{
   state = {
     contacts: [{id: 'id-1', name: 'Rosie Simpson', number: '459-12-56'},
@@ -13,6 +13,20 @@ export class App extends Component{
     {id: 'id-4', name: 'Annie Copeland', number: '227-91-26'},],
     filter: ''
   }
+
+  componentDidMount(){
+    const contacts =  localStorage.getItem(LS_KEY)
+    const parsed = JSON.parse(contacts)
+    if(parsed){
+       this.setState({contacts: parsed})
+         }
+  }
+
+      componentDidUpdate(prevProps, prevState){
+     if(this.state.contacts !== prevState.contacts){
+        localStorage.setItem(LS_KEY, JSON.stringify(this.state.contacts))
+     }
+    }
 
   handleAddContacts = (newContact) => {
    const hasContactDuplicate = this.state.contacts.some(contact => contact.name.toLowerCase() === newContact.name.toLowerCase())
